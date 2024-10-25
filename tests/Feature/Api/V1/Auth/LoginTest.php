@@ -47,7 +47,6 @@ describe('validations', function () {
         $response = $this->post(route('login'), []);
 
         $response->assertStatus(422);
-        dump($response->getContent());
 
         $response->assertJsonValidationErrors(
             [
