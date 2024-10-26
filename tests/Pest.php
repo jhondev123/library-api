@@ -11,7 +11,9 @@
 |
 */
 
-pest()->extend(Tests\TestCase::class)
+use App\Models\User;
+
+pest()->extend(Tests\TestCaseWithAuth::class)
  // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature');
 
@@ -45,3 +47,35 @@ function something()
 {
     // ..
 }
+function expectedBookJsonStructure()
+{
+    return [
+        'data' => [
+            '*' => ['id', 'title', 'author', 'created_at', 'updated_at']
+        ],
+        'status',
+        'message'
+    ];
+}
+
+
+function expectedOneBookJsonStructure()
+{
+    return [
+        'data' => ['id', 'title', 'author', 'created_at', 'updated_at']
+    ];
+}
+function expectedErrorJsonStructure()
+{
+    return [
+        'message',
+        'errors',
+        'status',
+        'data'
+    ];
+}
+
+beforeEach(function () {
+    $this->user = User::factory()->create();
+    $this->token = $this->user->createToken('Test Token')->plainTextToken; // Para Sanctum
+});

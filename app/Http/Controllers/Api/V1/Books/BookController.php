@@ -28,10 +28,11 @@ class BookController extends Controller
         $validation = Validator::make($request->all(), [
             'title' => 'required|string',
             'author' => 'required|string',
-            'description' => 'required|string',
+            'description' => 'required',
         ]);
+
         if($validation->fails()) {
-            return $this->response('Erro ao cadastrar um livro',422,$validation->errors());
+            return $this->error('Erro ao cadastrar um livro',422,$validation->errors());
         }
         $book = Book::create($request->all());
         return $this->response('Livro Cadastrado com sucesso',200, new BookResource($book));
@@ -52,17 +53,17 @@ class BookController extends Controller
     public function update(Request $request, Book $book)
     {
         $validation = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'author' => 'required|string',
-            'description' => 'required|string',
+            'title' => 'nullable|string',
+            'author' => 'nullable|string',
+            'description' => 'nullable|string',
         ]);
 
         if($validation->fails()) {
-            return $this->response('Erro ao editar o Livro',422,$validation->errors());
+            return $this->error('Erro ao editar o Livro',422,$validation->errors());
         }
 
         $book->update($request->all());
-        return new BookResource($book);
+        return $this->response('livro atualizado com sucesso',200, new BookResource($book));
 
     }
 
