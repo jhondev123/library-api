@@ -20,6 +20,7 @@ class BookFactory extends Factory
             'title' => $this->faker->sentence(3),
             'author' => $this->faker->name(),
             'description' => $this->faker->paragraph(3),
+            'status' => 'available',
 
         ];
     }

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('return_date');
             $table->date('devolution_date')->nullable();
             $table->enum('status', ['open', 'closed'])->default('open');
+            $table->enum('delivery_status', ['ok', 'late'])->default('ok');
             $table->text('observation')->nullable();
             $table->softDeletes();
             $table->timestamps();

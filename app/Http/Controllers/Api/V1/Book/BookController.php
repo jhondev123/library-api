@@ -24,6 +24,8 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge(['status' => 'available']);
+
         $validation = Validator::make($request->all(), [
             'title' => 'required|string',
             'author' => 'required|string',
@@ -33,7 +35,7 @@ class BookController extends Controller
         if($validation->fails()) {
             return $this->error('Erro ao cadastrar um livro',422,$validation->errors());
         }
-       $book =  Book::create($validation->validated());
+        $book =  Book::create($validation->validated());
         return $this->response('Livro Cadastrado com sucesso',200, new BookResource($book));
     }
 

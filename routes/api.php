@@ -24,4 +24,16 @@ Route::prefix('v1')->group(function () {
             'destroy' => 'books.destroy',
         ]
     )->middleware(Authenticate::class);
+
+    Route::apiResource('loans', App\Http\Controllers\Api\V1\Loan\LoanController::class)
+        ->names(
+        [
+            'index' => 'loans.index',
+            'store' => 'loans.store',
+            'show' => 'loans.show',
+            'update' => 'loans.update',
+            'destroy' => 'loans.destroy',
+        ]
+    )->middleware(Authenticate::class);
+
 });

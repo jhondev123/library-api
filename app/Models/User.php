@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'has_borrowed_books',
     ];
 
     /**
