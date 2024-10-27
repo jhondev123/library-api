@@ -12,9 +12,8 @@ use Illuminate\Support\Facades\Validator;
 class BookController extends Controller
 {
     use HttpResponse;
-    /**
-     * Display a listing of the resource.
-     */
+
+
     public function index()
     {
         return $this->response('Livros',200,BookResource::collection(Book::all()));
@@ -34,7 +33,7 @@ class BookController extends Controller
         if($validation->fails()) {
             return $this->error('Erro ao cadastrar um livro',422,$validation->errors());
         }
-        $book = Book::create($request->all());
+       $book =  Book::create($validation->validated());
         return $this->response('Livro Cadastrado com sucesso',200, new BookResource($book));
     }
 
@@ -62,7 +61,7 @@ class BookController extends Controller
             return $this->error('Erro ao editar o Livro',422,$validation->errors());
         }
 
-        $book->update($request->all());
+        $book->update($validation->validated());
         return $this->response('livro atualizado com sucesso',200, new BookResource($book));
 
     }
