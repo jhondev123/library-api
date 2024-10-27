@@ -14,7 +14,7 @@ Route::prefix('v1')->group(function () {
         ->name('logout')->middleware(Authenticate::class);
 
 
-    Route::apiResource('books', App\Http\Controllers\Api\V1\Books\BookController::class)
+    Route::apiResource('books', App\Http\Controllers\Api\V1\Book\BookController::class)
         ->names(
         [
             'index' => 'books.index',
