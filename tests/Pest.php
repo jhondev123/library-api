@@ -51,7 +51,7 @@ function expectedBookJsonStructure()
 {
     return [
         'data' => [
-            '*' => ['id', 'title', 'author', 'created_at', 'updated_at']
+            '*' => ['id', 'titulo', 'autor', 'data_criacao', 'data_atualizacao']
         ],
         'status',
         'message'
@@ -62,7 +62,7 @@ function expectedBookJsonStructure()
 function expectedOneBookJsonStructure()
 {
     return [
-        'data' => ['id', 'title', 'author', 'created_at', 'updated_at']
+        'data' => ['id', 'titulo', 'autor', 'data_criacao', 'data_atualizacao']
     ];
 }
 function expectedErrorJsonStructure()

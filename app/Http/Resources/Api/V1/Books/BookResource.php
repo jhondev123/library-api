@@ -21,6 +21,7 @@ class BookResource extends JsonResource
             'autor' => $this->author,
             'descricao' => $this->description,
             'data_criacao' => Carbon::parse($this->created_at)->format('d/m/Y'),
+            'data_atualizacao' => Carbon::parse($this->updated_at)->format('d/m/Y'),
         ];
     }
 }
