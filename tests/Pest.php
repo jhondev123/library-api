@@ -65,6 +65,33 @@ function expectedOneBookJsonStructure()
         'data' => ['id', 'titulo', 'autor', 'data_criacao', 'data_atualizacao']
     ];
 }
+
+function expectedLoanJsonStructure()
+{
+    return [
+        'data' => [
+            '*' => ['id', 'usuario', 'livro', 'data_emprestimo', 'data_devolucao']
+        ],
+        'status',
+        'message'
+    ];
+}
+function expectedOneLoanJsonStructure()
+{
+    return [
+        'data' => ['id', 'usuario', 'livro', 'data_emprestimo', 'data_devolucao']
+    ];
+
+}
+
+
+
+
+
+
+
+
+// json de errors
 function expectedErrorJsonStructure()
 {
     return [
@@ -74,6 +101,8 @@ function expectedErrorJsonStructure()
         'data'
     ];
 }
+
+
 
 beforeEach(function () {
     $this->user = User::factory()->create();
