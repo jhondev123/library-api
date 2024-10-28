@@ -39,7 +39,6 @@ class LoanController extends Controller
         if(!$request->has('return_date')) {
             $request->merge(['return_date' => now()->addDays(config('app.standart_return_time'))]);
         }
-
         $validation = Validator::make($request->all(), [
             'book_id' => 'required|exists:books,id',
             'user_id' => 'required|exists:users,id',
@@ -56,7 +55,7 @@ class LoanController extends Controller
 
         // verifica se o livro já está emprestado
         $book = Book::find($request->book_id);
-        if(VerifyBookIsAvaliableAction::execute($book)) {
+        if(!VerifyBookIsAvaliableAction::execute($book)) {
             return $this->error('Livro não disponível para empréstimo',422);
         }
 
@@ -66,9 +65,11 @@ class LoanController extends Controller
             return $this->error('Usuário já tem livros emprestados',422);
         }
 
-        $loan = Loan::create($validation->validated());
+        $loan = Loan::create($request->all());
 
-        $loan = Loan::find($loan->id);
+        $book->update(['status' => 'unavailable']);
+        $user->update(['has_borrowed_books' => true]);
+       // $loan = Loan::find($loan->id);
         return $this->response('Empréstimo criado com sucesso',201,new LoanResource($loan));
 
     }

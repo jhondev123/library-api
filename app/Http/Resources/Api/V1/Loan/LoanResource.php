@@ -36,6 +36,7 @@ class LoanResource extends JsonResource
             'multa' => $this->whenLoaded('fine', function () {
                 return new FineResource($this->fine);
             }),
+
         ];
     }
 }
