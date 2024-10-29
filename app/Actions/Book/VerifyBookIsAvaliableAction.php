@@ -8,7 +8,7 @@ use App\Models\Book;
 class VerifyBookIsAvaliableAction
 {
 
-    public static function execute(Book $book)
+    public function execute(Book $book)
     {
         return $book->status === BookStatus::Available->value;
     }

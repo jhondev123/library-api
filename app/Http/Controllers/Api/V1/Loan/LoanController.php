@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Loan;
 
 use App\Actions\Book\VerifyBookIsAvaliableAction;
+use App\Actions\Loan\LoanBookAction;
 use App\Actions\User\VerifyUserHasBorrowedBooksAction;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\V1\Loan\LoanResource;
@@ -29,7 +30,7 @@ class LoanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request,LoanBookAction $action)
     {
         $request->merge(['status' => 'open', 'delivery_status' => 'ok']);
 
@@ -53,24 +54,10 @@ class LoanController extends Controller
             return $this->error('Erro ao criar um empréstimo',422,$validation->errors());
         }
 
-        // verifica se o livro já está emprestado
         $book = Book::find($request->book_id);
-        if(!VerifyBookIsAvaliableAction::execute($book)) {
-            return $this->error('Livro não disponível para empréstimo',422);
-        }
-
-        // verifica se o usuário já tem livros emprestados
         $user = User::find($request->user_id);
-        if(VerifyUserHasBorrowedBooksAction::execute($user)) {
-            return $this->error('Usuário já tem livros emprestados',422);
-        }
 
-        $loan = Loan::create($request->all());
-
-        $book->update(['status' => 'unavailable']);
-        $user->update(['has_borrowed_books' => true]);
-       // $loan = Loan::find($loan->id);
-        return $this->response('Empréstimo criado com sucesso',201,new LoanResource($loan));
+        return $action->execute($book,$user,$request->all());
 
     }
 
@@ -96,6 +83,7 @@ class LoanController extends Controller
      */
     public function destroy(Loan $loan)
     {
-        //
+        $loan->delete();
+        return response()->json(null, 204);
     }
 }
