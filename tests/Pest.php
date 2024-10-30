@@ -1,5 +1,6 @@
 <?php
 
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -12,10 +13,12 @@
 */
 
 use App\Models\User;
+use Tests\TestCase;
+
 
 pest()->extend(Tests\TestCaseWithAuth::class)
  // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-    ->in('Feature');
+    ->in('Feature','Unit');
 
 /*
 |--------------------------------------------------------------------------

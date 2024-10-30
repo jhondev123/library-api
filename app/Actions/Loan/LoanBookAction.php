@@ -4,12 +4,13 @@ namespace App\Actions\Loan;
 
 use App\Actions\Book\VerifyBookIsAvaliableAction;
 use App\Actions\User\VerifyUserHasBorrowedBooksAction;
-use App\Http\Resources\Api\V1\Loan\LoanResource;
+use App\Dtos\Loan\StoreLoanDto;
+use App\Exceptions\Book\BookUnavailableException;
+use App\Exceptions\Loan\UserHasBorrowedBooksException;
 use App\Models\Book;
 use App\Models\Loan;
 use App\Models\User;
 use App\Traits\HttpResponse;
-use Illuminate\Contracts\Routing\ResponseFactory;
 
 class LoanBookAction
 {
@@ -17,27 +18,30 @@ class LoanBookAction
 
     public function __construct(
         private VerifyBookIsAvaliableAction $verifyBookIsAvaliableAction,
-        private  VerifyUserHasBorrowedBooksAction $verifyUserHasBorrowedBooksAction,
+        private VerifyUserHasBorrowedBooksAction $verifyUserHasBorrowedBooksAction,
+        private Loan $loan
     )
     {
 
     }
-    public function execute(Book $book, User $user,array $data)
+
+    public function execute(Book $book, User $user, StoreLoanDto $dto): Loan
     {
         // verifica se o livro já está emprestado
-        if(!$this->verifyBookIsAvaliableAction->execute($book)) {
-            return $this->error('Livro não disponível para empréstimo',422);
+        if (!$this->verifyBookIsAvaliableAction->execute($book)) {
+            throw new BookUnavailableException('Livro não disponível para empréstimo');
         }
 
         // verifica se o usuário já tem livros emprestados
-        if($this->verifyUserHasBorrowedBooksAction->execute($user)) {
-            return $this->error('Usuário já tem livros emprestados',422);
+        if ($this->verifyUserHasBorrowedBooksAction->execute($user)) {
+            throw new UserHasBorrowedBooksException('Usuário já tem livros emprestados');
         }
-        $loan = Loan::create($data);
+
+        $loan = $this->loan->create($dto->toArray());
 
         $book->update(['status' => 'unavailable']);
         $user->update(['has_borrowed_books' => true]);
-        return $this->response('Empréstimo criado com sucesso',201,new LoanResource($loan));
 
+        return $loan;
     }
 }

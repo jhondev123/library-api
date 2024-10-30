@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api\V1\Loan;
 use App\Actions\Book\VerifyBookIsAvaliableAction;
 use App\Actions\Loan\LoanBookAction;
 use App\Actions\User\VerifyUserHasBorrowedBooksAction;
+use App\Dtos\Loan\StoreLoanDto;
+use App\Exceptions\Book\BookUnavailableException;
+use App\Exceptions\Loan\UserHasBorrowedBooksException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\V1\Loan\LoanResource;
 use App\Models\Book;
@@ -32,32 +35,36 @@ class LoanController extends Controller
      */
     public function store(Request $request,LoanBookAction $action)
     {
-        $request->merge(['status' => 'open', 'delivery_status' => 'ok']);
+            $validation = Validator::make($request->all(), [
+                'book_id' => 'required|exists:books,id',
+                'user_id' => 'required|exists:users,id',
+                'loan_date' => 'nullable|date',
+                'return_date' => 'nullable|date',
+                'devolution_date' => 'nullable|date',
+                'observation' => 'nullable|string',
+            ]);
 
-        if(!$request->has('loan_date')) {
-            $request->merge(['loan_date' => now()]);
+            if ($validation->fails()) {
+                return $this->error('Erro ao criar um empréstimo', 422, $validation->errors());
+            }
+
+            $book = Book::findOrFail($request->book_id);
+            $user = User::findOrFail($request->user_id);
+
+            $storeLoanDto = StoreLoanDto::fromRequest([
+                ...$request->all(),
+                'status' => 'open',
+                'delivery_status' => 'ok',
+            ]);
+        try {
+
+            $loan = $action->execute($book, $user, $storeLoanDto);
+
+            return $this->response('Empréstimo criado com sucesso', 201, new LoanResource($loan));
+        } catch (BookUnavailableException|UserHasBorrowedBooksException $e) {
+            return $this->error($e->getMessage(), 422);
+
         }
-        if(!$request->has('return_date')) {
-            $request->merge(['return_date' => now()->addDays(config('app.standart_return_time'))]);
-        }
-        $validation = Validator::make($request->all(), [
-            'book_id' => 'required|exists:books,id',
-            'user_id' => 'required|exists:users,id',
-
-            'loan_date' => 'nullable|date',
-            'return_date' => 'nullable|date',
-            'devolution_date' => 'nullable|date',
-            'observation' => 'nullable|string',
-        ]);
-
-        if($validation->fails()) {
-            return $this->error('Erro ao criar um empréstimo',422,$validation->errors());
-        }
-
-        $book = Book::find($request->book_id);
-        $user = User::find($request->user_id);
-
-        return $action->execute($book,$user,$request->all());
 
     }
 
