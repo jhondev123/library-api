@@ -2,8 +2,8 @@
 
 namespace App\Enums;
 
-class LoanStatus:string
+enum LoanStatus:string
 {
-    const string BORROWED = 'borrowed';
-    const string DEVOLUTION = 'devolution';
+    case OPEN = 'open';
+    case CLOSED = 'closed';
 }

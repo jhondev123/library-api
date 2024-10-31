@@ -4,35 +4,36 @@ use App\Models\User;
 use App\Actions\User\VerifyUserHasBorrowedBooksAction;
 
 beforeEach(function () {
-    // mocks
-    $this->userMockTrue = Mockery::mock(User::class);
+    // Mock do usuário que possui empréstimos
+    $this->userMockTrue = Mockery::mock(User::class)->makePartial();
     $this->userMockTrue->allows('getAttribute')
         ->with('has_borrowed_books')
         ->andReturns(true);
 
-    $this->userMockFalse = Mockery::mock(User::class);
+    // Mock do usuário que não possui empréstimos
+    $this->userMockFalse = Mockery::mock(User::class)->makePartial();
     $this->userMockFalse->allows('getAttribute')
         ->with('has_borrowed_books')
         ->andReturns(false);
 
-    $this->userMockWithoutField = Mockery::mock(User::class);
-
+    // Mock de usuário sem o campo `has_borrowed_books`
+    $this->userMockWithoutField = Mockery::mock(User::class)->makePartial();
 });
 
 test('verifica se o usuário possui empréstimos', function () {
-
-    $action  = VerifyUserHasBorrowedBooksAction::execute($this->userMockTrue);
-    expect($action)->toBeTrue();
-
+    $action = new VerifyUserHasBorrowedBooksAction();
+    $result = $action->execute($this->userMockTrue);
+    expect($result)->toBeTrue();
 });
+
 test('verifica se o usuário não possui empréstimos', function () {
-
-        $action  = VerifyUserHasBorrowedBooksAction::execute($this->userMockFalse);
-        expect($action)->toBeFalse();
-
+    $action = new VerifyUserHasBorrowedBooksAction();
+    $result = $action->execute($this->userMockFalse);
+    expect($result)->toBeFalse();
 });
 
 test('verifica se o usuário não possui o campo has_borrowed_books', function () {
-    expect(fn() => VerifyUserHasBorrowedBooksAction::execute($this->userMockWithoutField))
+    $action = new VerifyUserHasBorrowedBooksAction();
+    expect(fn() => $action->execute($this->userMockWithoutField))
         ->toThrow(BadMethodCallException::class);
 });

@@ -3,30 +3,38 @@
 use App\Models\Loan;
 
 test('Testando devolver um livro', function () {
-    // Cria um empréstimo usando a factory
-    $loan = Loan::factory()->create();
-
-    // Faz uma requisição POST para a rota de devolução
+    $loan = Loan::factory()->create([
+        'status' => 'open',
+    ]);
     $response = $this->post(route('loans.devolution', $loan->id), [
         'devolution_date' => now()->format('Y-m-d'),
         'observation' => 'Devolução do livro',
     ], $this->getAuthorizationHeader());
 
-    // Verifica se a resposta foi bem-sucedida
     $response->assertStatus(200);
 
-    // Verifica a estrutura do JSON de resposta
     $response->assertJsonStructure(expectedOneLoanJsonStructure());
-
-    // Verifica se o JSON contém os dados esperados
     $response->assertJsonFragment([
-        'data' => [
-            'data_devolucao' => now()->format('d/m/Y'), // Ajuste para o mesmo formato utilizado na requisição
-            'observacao' => 'Devolução do livro', // Use a string diretamente
-        ],
+        'status' => 'Fechado',
+        'observacao' => 'Devolução do livro',
     ]);
+
 });
 
+test('testando devolver um empréstimo ja devolvido', function () {
+    $loan = Loan::factory()->create([
+        'status' => 'closed',
+    ]);
+    $response = $this->post(route('loans.devolution', $loan->id), [
+        'devolution_date' => now()->format('Y-m-d'),
+        'observation' => 'Devolução do livro',
+    ], $this->getAuthorizationHeader());
+
+    $response->assertStatus(400);
+
+    $response->assertJsonStructure(expectedErrorJsonStructure());
+
+});
 
 
 test('testando devolver com usuário não autenticado',function (){

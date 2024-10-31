@@ -1,36 +1,38 @@
 <?php
 
-use App\Actions\Book\VerifyBookIsAvaliableAction;
 use App\Models\Book;
+
+use App\Actions\Book\VerifyBookIsAvaliableAction;
 beforeEach(function () {
-    // mocks
-    $this->bookMockAvailiable = Mockery::mock(Book::class);
-    $this->bookMockAvailiable->allows('getAttribute')
+    // Mocks de livros com diferentes estados
+    $this->bookMockAvailable = Mockery::mock(Book::class)->makePartial();
+    $this->bookMockAvailable->allows('getAttribute')
         ->with('status')
         ->andReturns('available');
 
-    $this->bookMockUnavailable = Mockery::mock(Book::class);
+    $this->bookMockUnavailable = Mockery::mock(Book::class)->makePartial();
     $this->bookMockUnavailable->allows('getAttribute')
         ->with('status')
         ->andReturns('unavailable');
 
-    $this->bookMockWithoutField = Mockery::mock(Book::class);
-
+    $this->bookMockWithoutField = Mockery::mock(Book::class)->makePartial();
 });
 
 test('verifica se o livro está disponível', function () {
-    $action =  VerifyBookIsAvaliableAction::execute($this->bookMockAvailiable);
-    expect($action)->toBeTrue();
+    $action = new VerifyBookIsAvaliableAction();
+    $result = $action->execute($this->bookMockAvailable);
+    expect($result)->toBeTrue();
 });
 
 test('verifica se o livro não está disponível', function () {
-    $action =  VerifyBookIsAvaliableAction::execute($this->bookMockUnavailable);
-    expect($action)->toBeFalse();
+    $action = new VerifyBookIsAvaliableAction();
+    $result = $action->execute($this->bookMockUnavailable);
+    expect($result)->toBeFalse();
 });
 
 test('verifica se o livro não tem o campo status', function () {
-    expect(fn() => VerifyBookIsAvaliableAction::execute($this->bookMockWithoutField))
+    $action = new VerifyBookIsAvaliableAction();
+    expect(fn() => $action->execute($this->bookMockWithoutField))
         ->toThrow(BadMethodCallException::class);
-
 });
 

@@ -35,8 +35,10 @@ class LoanDevolutionController extends Controller
         if($validation->fails()){
             return $this->error('Erro ao devolver o livro', 422, $validation->errors());
         }
+
+        $dto = DevolutionLoanDto::fromRequest($request->all());
+
         try{
-            $dto = DevolutionLoanDto::fromRequest($request->all());
             $loanUpdated = $action->execute($loan, $dto);
             return $this->response('Livro devolvido com sucesso', 200, new LoanResource($loanUpdated));
         }catch(BookAlreadyReturn $e){
