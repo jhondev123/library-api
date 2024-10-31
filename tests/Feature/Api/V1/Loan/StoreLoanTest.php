@@ -54,3 +54,13 @@ test('testa cadastrar um empréstimo com usuário que já tem livros emprestados
     $response->assertStatus(422);
     $response->assertJsonStructure(expectedErrorJsonStructure());
 });
+
+test('testando cadastrar um empréstimo com usuário não autenticado',function (){
+    $response = $this->post(route('loans.store'),[
+        'book_id' => $this->book->id,
+        'user_id' => $this->user->id,
+    ]);
+
+    $response->assertStatus(401);
+    $response->assertJsonStructure(['message']);
+});

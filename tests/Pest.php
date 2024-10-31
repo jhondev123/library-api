@@ -73,7 +73,7 @@ function expectedLoanJsonStructure()
 {
     return [
         'data' => [
-            '*' => ['id', 'usuario', 'livro', 'data_emprestimo', 'data_devolucao']
+            '*' => ['id', 'usuario', 'livro', 'data_emprestimo', 'data_devolucao','observacao']
         ],
         'status',
         'message'
@@ -82,7 +82,7 @@ function expectedLoanJsonStructure()
 function expectedOneLoanJsonStructure()
 {
     return [
-        'data' => ['id', 'usuario', 'livro', 'data_emprestimo', 'data_devolucao']
+        'data' => ['id', 'usuario', 'livro', 'data_emprestimo', 'data_devolucao','observacao']
     ];
 
 }

@@ -36,4 +36,6 @@ Route::prefix('v1')->group(function () {
         ]
     )->middleware(Authenticate::class);
 
+    Route::post('loans/{loan}/devolution', [App\Http\Controllers\Api\V1\Loan\LoanDevolutionController::class, '__invoke'])
+        ->name('loans.devolution')->middleware(Authenticate::class);
 });

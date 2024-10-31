@@ -82,7 +82,23 @@ class LoanController extends Controller
      */
     public function update(Request $request, Loan $loan)
     {
-        //
+        if(empty($request->all())){
+            return $this->response('',204,[]);
+        }
+
+        $validation = Validator::make($request->all(), [
+            'return_date' => 'nullable|date|after_or_equal:today',
+            'observation' => 'nullable|string',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->error('Erro ao atualizar um empréstimo', 422, $validation->errors());
+        }
+
+        $loan->update($request->all());
+
+        return $this->response('Empréstimo atualizado com sucesso', 200, new LoanResource($loan));
+
     }
 
     /**

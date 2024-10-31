@@ -32,6 +32,7 @@ class LoanResource extends JsonResource
 
             'status' => $status[$this->status],
             'status_entrega' => $delivery_status[$this->delivery_status],
+            'observacao' => $this->observation,
 
             'multa' => $this->whenLoaded('fine', function () {
                 return new FineResource($this->fine);
