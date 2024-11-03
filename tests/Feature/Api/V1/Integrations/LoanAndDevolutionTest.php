@@ -21,15 +21,33 @@ test('testando criar um empréstimo e devolver em seguida', function () {
     $response->assertJsonStructure(expectedOneLoanJsonStructure());
     $loan_id = $response->json('data')['id'];
 
+    // verificando o status do livro está indisponível
+    $this->assertDatabaseHas('books', [
+        'id' => $this->book->id,
+        'status' => 'unavailable',
+    ]);
+
+    //verificando se o usuário tem livros emprestados
+    $this->assertDatabaseHas('users', [
+        'id' => $this->user->id,
+        'has_borrowed_books' => true,
+    ]);
+
+
     // devolvendo o livro
     $response = $this->post(route('loans.devolution', $loan_id), [], $this->getAuthorizationHeader());
     $response->assertStatus(200);
     $response->assertJsonStructure(expectedOneLoanJsonStructure());
 
-    // testando o status do livro is avaliable
+    // verificando o status do livro está disponível
     $this->assertDatabaseHas('books', [
         'id' => $this->book->id,
         'status' => 'available',
     ]);
 
+    //verificando se o usuário não tem livros emprestados
+    $this->assertDatabaseHas('users', [
+        'id' => $this->user->id,
+        'has_borrowed_books' => false,
+    ]);
 });
