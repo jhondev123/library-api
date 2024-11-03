@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Validator;
 class LoanController extends Controller
 {
     use HttpResponse;
+
     /**
      * Display a listing of the resource.
      */
@@ -33,29 +34,29 @@ class LoanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request,LoanBookAction $action)
+    public function store(Request $request, LoanBookAction $action)
     {
-            $validation = Validator::make($request->all(), [
-                'book_id' => 'required|exists:books,id',
-                'user_id' => 'required|exists:users,id',
-                'loan_date' => 'nullable|date',
-                'return_date' => 'nullable|date',
-                'devolution_date' => 'nullable|date',
-                'observation' => 'nullable|string',
-            ]);
+        $validation = Validator::make($request->all(), [
+            'book_id' => 'required|exists:books,id',
+            'user_id' => 'required|exists:users,id',
+            'loan_date' => 'nullable|date',
+            'return_date' => 'nullable|date',
+            'devolution_date' => 'nullable|date',
+            'observation' => 'nullable|string',
+        ]);
 
-            if ($validation->fails()) {
-                return $this->error('Erro ao criar um empréstimo', 422, $validation->errors());
-            }
+        if ($validation->fails()) {
+            return $this->error('Erro ao criar um empréstimo', 422, $validation->errors());
+        }
 
-            $book = Book::findOrFail($request->book_id);
-            $user = User::findOrFail($request->user_id);
+        $book = Book::findOrFail($request->book_id);
+        $user = User::findOrFail($request->user_id);
 
-            $storeLoanDto = StoreLoanDto::fromRequest([
-                ...$request->all(),
-                'status' => 'open',
-                'delivery_status' => 'ok',
-            ]);
+        $storeLoanDto = StoreLoanDto::fromRequest([
+            ...$request->all(),
+            'status' => 'open',
+            'delivery_status' => 'ok',
+        ]);
         try {
 
             $loan = $action->execute($book, $user, $storeLoanDto);
@@ -74,7 +75,7 @@ class LoanController extends Controller
     public function show(Loan $loan)
     {
         $loan->load('fine');
-        return $this->response('Empréstimo',200,new LoanResource($loan));
+        return $this->response('Empréstimo', 200, new LoanResource($loan));
     }
 
     /**
@@ -82,8 +83,8 @@ class LoanController extends Controller
      */
     public function update(Request $request, Loan $loan)
     {
-        if(empty($request->all())){
-            return $this->response('',204,[]);
+        if (empty($request->all())) {
+            return $this->response('', 204, []);
         }
 
         $validation = Validator::make($request->all(), [

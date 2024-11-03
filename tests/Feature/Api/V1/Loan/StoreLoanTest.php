@@ -16,10 +16,10 @@ beforeEach(function () {
 
 test('store, testando cadastrar um empréstimo', function () {
 
-    $response = $this->post(route('loans.store'),[
+    $response = $this->post(route('loans.store'), [
         'book_id' => $this->book->id,
         'user_id' => $this->user->id,
-    ],$this->getAuthorizationHeader());
+    ], $this->getAuthorizationHeader());
 
 
     $response->assertStatus(201);
@@ -28,17 +28,17 @@ test('store, testando cadastrar um empréstimo', function () {
 
 test('testa cadastrar sem usuário e livro', function () {
 
-    $response = $this->post(route('loans.store'),[],$this->getAuthorizationHeader());
+    $response = $this->post(route('loans.store'), [], $this->getAuthorizationHeader());
 
     $response->assertStatus(422);
     $response->assertJsonStructure(expectedErrorJsonStructure());
 });
 test('testa cadastar um empréstimo com livro indisponível', function () {
 
-    $response = $this->post(route('loans.store'),[
+    $response = $this->post(route('loans.store'), [
         'book_id' => $this->book_with_status_unavailable->id,
         'user_id' => $this->user->id,
-    ],$this->getAuthorizationHeader());
+    ], $this->getAuthorizationHeader());
 
     $response->assertStatus(422);
     $response->assertJsonStructure(expectedErrorJsonStructure());
@@ -46,17 +46,17 @@ test('testa cadastar um empréstimo com livro indisponível', function () {
 
 test('testa cadastrar um empréstimo com usuário que já tem livros emprestados', function () {
 
-    $response = $this->post(route('loans.store'),[
+    $response = $this->post(route('loans.store'), [
         'book_id' => $this->book->id,
         'user_id' => $this->user_with_borrowed_books->id,
-    ],$this->getAuthorizationHeader());
+    ], $this->getAuthorizationHeader());
 
     $response->assertStatus(422);
     $response->assertJsonStructure(expectedErrorJsonStructure());
 });
 
-test('testando cadastrar um empréstimo com usuário não autenticado',function (){
-    $response = $this->post(route('loans.store'),[
+test('testando cadastrar um empréstimo com usuário não autenticado', function () {
+    $response = $this->post(route('loans.store'), [
         'book_id' => $this->book->id,
         'user_id' => $this->user->id,
     ]);

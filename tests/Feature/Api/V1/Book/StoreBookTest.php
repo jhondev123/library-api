@@ -8,7 +8,7 @@ it('Cadastra um livro', function () use ($title, $author, $description) {
         'title' => $title,
         'author' => $author,
         'description' => $description,
-    ],$this->getAuthorizationHeader());
+    ], $this->getAuthorizationHeader());
 
     $response->assertStatus(200);
     $response->assertJsonStructure(expectedOneBookJsonStructure());
@@ -18,13 +18,13 @@ it('Tenta cadastrar um livro sem descrição', function () use ($title, $author)
     $response = $this->post(route('books.store'), [
         'title' => $title,
         'author' => $author,
-    ],$this->getAuthorizationHeader());
+    ], $this->getAuthorizationHeader());
 
     $response->assertStatus(422);
     $response->assertJsonStructure(expectedErrorJsonStructure());
     $response->assertJsonValidationErrors(
         [
-            'description' => trans('validation.required',['attribute' => 'description']),
+            'description' => trans('validation.required', ['attribute' => 'description']),
         ]
     );
 });
@@ -34,57 +34,57 @@ it('Tenta cadastrar um livro sem titulo', function () use ($author, $description
     $response = $this->post(route('books.store'), [
         'author' => $author,
         'description' => $description,
-    ],$this->getAuthorizationHeader());
+    ], $this->getAuthorizationHeader());
 
     $response->assertStatus(422);
     $response->assertJsonStructure(expectedErrorJsonStructure());
     $response->assertJsonValidationErrors(
         [
-            'title' => trans('validation.required',['attribute' => 'title'])
+            'title' => trans('validation.required', ['attribute' => 'title'])
         ]
     );
 
 });
 
-it('Tenta cadastrar um livro sem autor', function () use($title, $description) {
+it('Tenta cadastrar um livro sem autor', function () use ($title, $description) {
     $response = $this->post(route('books.store'), [
         'title' => $title,
         'description' => $description,
-    ],$this->getAuthorizationHeader());
+    ], $this->getAuthorizationHeader());
 
     $response->assertStatus(422);
     $response->assertJsonStructure(expectedErrorJsonStructure());
     $response->assertJsonValidationErrors(
         [
-            'author' => trans('validation.required',['attribute' => 'author'])
+            'author' => trans('validation.required', ['attribute' => 'author'])
         ]
     );
 });
 
-it('testa cadastrar um livro com author inválido',function () use($title, $description,$author) {
+it('testa cadastrar um livro com author inválido', function () use ($title, $description, $author) {
     $response = $this->post(route('books.store'), [
         'title' => $title,
         'author' => 123,
         'description' => $description,
-    ],$this->getAuthorizationHeader());
+    ], $this->getAuthorizationHeader());
 
     $response->assertStatus(422);
     $response->assertJsonStructure(expectedErrorJsonStructure());
     $response->assertJsonValidationErrors(
         [
-            'author' => trans('validation.string',['attribute' => 'author'])
+            'author' => trans('validation.string', ['attribute' => 'author'])
         ]
     );
 
 });
 
-it('testa cadastrar um livro com title inválido',function () use($author, $description) {
+it('testa cadastrar um livro com title inválido', function () use ($author, $description) {
 
     $response = $this->post(route('books.store'), [
         'title' => 123,
         'author' => $author,
         'description' => $description,
-    ],$this->getAuthorizationHeader());
+    ], $this->getAuthorizationHeader());
 
     $response->assertStatus(422);
     $response->assertJsonStructure(expectedErrorJsonStructure());
@@ -95,7 +95,7 @@ it('testa cadastrar um livro com title inválido',function () use($author, $desc
     );
 });
 
-it('testa cadastrar com um usuário não autenticado', function () use($title, $author, $description) {
+it('testa cadastrar com um usuário não autenticado', function () use ($title, $author, $description) {
     $response = $this->post(route('books.store'), [
         'title' => $title,
         'author' => $author,

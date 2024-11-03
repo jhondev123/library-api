@@ -3,6 +3,7 @@
 use App\Models\Book;
 
 use App\Actions\Book\VerifyBookIsAvaliableAction;
+
 beforeEach(function () {
     // Mocks de livros com diferentes estados
     $this->bookMockAvailable = Mockery::mock(Book::class)->makePartial();

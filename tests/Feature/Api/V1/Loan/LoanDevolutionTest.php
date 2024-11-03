@@ -37,9 +37,9 @@ test('testando devolver um empréstimo ja devolvido', function () {
 });
 
 
-test('testando devolver com usuário não autenticado',function (){
+test('testando devolver com usuário não autenticado', function () {
     $loan = Loan::factory()->create();
-    $response = $this->post(route('loans.devolution',$loan->id),[
+    $response = $this->post(route('loans.devolution', $loan->id), [
         'return_date' => now()->addDays(7)->format('Y-m-d'),
         'observation' => 'Livro emprestado para estudo',
     ]);

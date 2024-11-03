@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum BookStatus :string
+enum BookStatus: string
 {
     case Available = 'available';
     case Unavailable = 'unavailable';

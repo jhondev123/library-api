@@ -12,9 +12,9 @@ class DevolutionBookAction
     /**
      * @throws BookAlreadyReturn
      */
-    public function execute(Loan $loan, DevolutionLoanDto $dto):Loan
+    public function execute(Loan $loan, DevolutionLoanDto $dto): Loan
     {
-        if($loan->status === LoanStatus::CLOSED->value){
+        if ($loan->status === LoanStatus::CLOSED->value) {
             throw new BookAlreadyReturn('Livro já devolvido');
         }
         $loan->book->update(['status' => 'available']);

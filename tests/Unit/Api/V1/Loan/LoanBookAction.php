@@ -1,4 +1,5 @@
 <?php
+
 use App\Actions\Book\VerifyBookIsAvaliableAction;
 use App\Actions\Loan\LoanBookAction;
 use App\Actions\User\VerifyUserHasBorrowedBooksAction;
@@ -41,7 +42,7 @@ test('não deve criar empréstimo com livro indisponível', function () {
         ->andReturns(false);
 
     // Act & Assert
-    expect(fn () => $this->action->execute($this->bookMock, $this->userMock, $this->loanData))
+    expect(fn() => $this->action->execute($this->bookMock, $this->userMock, $this->loanData))
         ->toThrow(BookUnavailableException::class, 'Livro não disponível para empréstimo');
 });
 
@@ -58,7 +59,7 @@ test('não deve criar empréstimo para usuário que já tem livros emprestados',
         ->andReturns(true);
 
     // Act & Assert
-    expect(fn () => $this->action->execute($this->bookMock, $this->userMock, $this->loanData))
+    expect(fn() => $this->action->execute($this->bookMock, $this->userMock, $this->loanData))
         ->toThrow(UserHasBorrowedBooksException::class, 'Usuário já tem livros emprestados');
 });
 

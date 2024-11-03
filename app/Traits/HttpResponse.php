@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Traits;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Contracts\Support\MessageBag;

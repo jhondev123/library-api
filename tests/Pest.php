@@ -17,8 +17,8 @@ use Tests\TestCase;
 
 
 pest()->extend(Tests\TestCaseWithAuth::class)
- // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-    ->in('Feature','Unit');
+    // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->in('Feature', 'Unit');
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +50,7 @@ function something()
 {
     // ..
 }
+
 function expectedBookJsonStructure()
 {
     return [
@@ -73,25 +74,39 @@ function expectedLoanJsonStructure()
 {
     return [
         'data' => [
-            '*' => ['id', 'usuario', 'livro', 'data_emprestimo', 'data_devolucao','observacao']
+            '*' => ['id', 'usuario', 'livro', 'data_emprestimo', 'data_devolucao', 'observacao']
         ],
         'status',
         'message'
     ];
 }
+
 function expectedOneLoanJsonStructure()
 {
     return [
-        'data' => ['id', 'usuario', 'livro', 'data_emprestimo', 'data_devolucao','observacao']
+        'data' => ['id', 'usuario', 'livro', 'data_emprestimo', 'data_devolucao', 'observacao']
     ];
 
 }
 
+function expectedUserJsonStructure()
+{
+    return [
+        'data' => [
+            '*' => ['id', 'nome', 'email']
+        ],
+        'status',
+        'message'
+    ];
+}
 
+function expectedOneUserJsonStructure()
+{
+    return [
+        'data' => ['id', 'nome']
+    ];
 
-
-
-
+}
 
 
 // json de errors
@@ -104,7 +119,6 @@ function expectedErrorJsonStructure()
         'data'
     ];
 }
-
 
 
 beforeEach(function () {

@@ -29,7 +29,7 @@ class LoanFactory extends Factory
         $devolution_date = null;
 
         $status = $this->faker->randomElement(['open', 'closed']);
-        if($status === 'closed'){
+        if ($status === 'closed') {
             $devolution_date = $this->faker->dateTimeBetween($loan_date, Carbon::instance($return_date)->addDays(30));
         }
 

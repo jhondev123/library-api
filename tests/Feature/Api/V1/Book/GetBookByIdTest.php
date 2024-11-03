@@ -3,7 +3,6 @@
 use App\Models\Book;
 
 
-
 it('Deveria trazer um livro', function () {
     $book = Book::factory()->create();
     $response = $this->get(route('books.show', $book->id), $this->getAuthorizationHeader()

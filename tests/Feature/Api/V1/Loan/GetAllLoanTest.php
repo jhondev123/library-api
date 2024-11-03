@@ -2,7 +2,7 @@
 
 test('index, trás todos os empréstimos', function () {
     \App\Models\Loan::factory(10)->create();
-    $response = $this->get(route('loans.index'),$this->getAuthorizationHeader());
+    $response = $this->get(route('loans.index'), $this->getAuthorizationHeader());
 
 
     $response->assertStatus(200);

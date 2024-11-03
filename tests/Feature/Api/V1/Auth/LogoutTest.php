@@ -5,7 +5,7 @@ use App\Models\User;
 it('user authenticated should can logout ', function () {
     $user = User::factory()->create();
     $token = $user->createToken('test')->plainTextToken;
-     $response = $this->post(route('logout'), [], [
+    $response = $this->post(route('logout'), [], [
         'Authorization' => 'Bearer ' . $token,
     ]);
 

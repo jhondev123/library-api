@@ -16,7 +16,7 @@ class BookController extends Controller
 
     public function index()
     {
-        return $this->response('Livros',200,BookResource::collection(Book::all()));
+        return $this->response('Livros', 200, BookResource::collection(Book::all()));
     }
 
     /**
@@ -32,11 +32,11 @@ class BookController extends Controller
             'description' => 'required',
         ]);
 
-        if($validation->fails()) {
-            return $this->error('Erro ao cadastrar um livro',422,$validation->errors());
+        if ($validation->fails()) {
+            return $this->error('Erro ao cadastrar um livro', 422, $validation->errors());
         }
-        $book =  Book::create($validation->validated());
-        return $this->response('Livro Cadastrado com sucesso',200, new BookResource($book));
+        $book = Book::create($validation->validated());
+        return $this->response('Livro Cadastrado com sucesso', 200, new BookResource($book));
     }
 
     /**
@@ -44,7 +44,7 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        return $this->response( 'Livro',200,new BookResource($book));
+        return $this->response('Livro', 200, new BookResource($book));
 
     }
 
@@ -59,12 +59,12 @@ class BookController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        if($validation->fails()) {
-            return $this->error('Erro ao editar o Livro',422,$validation->errors());
+        if ($validation->fails()) {
+            return $this->error('Erro ao editar o Livro', 422, $validation->errors());
         }
 
         $book->update($validation->validated());
-        return $this->response('livro atualizado com sucesso',200, new BookResource($book));
+        return $this->response('livro atualizado com sucesso', 200, new BookResource($book));
 
     }
 

@@ -17,9 +17,9 @@ class LoanBookAction
     use HttpResponse;
 
     public function __construct(
-        private VerifyBookIsAvaliableAction $verifyBookIsAvaliableAction,
+        private VerifyBookIsAvaliableAction      $verifyBookIsAvaliableAction,
         private VerifyUserHasBorrowedBooksAction $verifyUserHasBorrowedBooksAction,
-        private Loan $loan
+        private Loan                             $loan
     )
     {
 

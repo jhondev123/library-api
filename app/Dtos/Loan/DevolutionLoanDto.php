@@ -11,7 +11,7 @@ class DevolutionLoanDto
     {
     }
 
-    public static function fromRequest($data):self
+    public static function fromRequest($data): self
     {
         return new self(
             observation: $data['observation'],
@@ -20,7 +20,7 @@ class DevolutionLoanDto
 
     }
 
-    public function toArray():array
+    public function toArray(): array
     {
         return [
             'observation' => $this->observation,

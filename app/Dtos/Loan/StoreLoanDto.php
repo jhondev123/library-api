@@ -5,14 +5,15 @@ namespace App\Dtos\Loan;
 class StoreLoanDto
 {
     public function __construct(
-        public string $book_id,
-        public string $user_id,
-        public string $status,
-        public string $delivery_status,
+        public string  $book_id,
+        public string  $user_id,
+        public string  $status,
+        public string  $delivery_status,
         public ?string $loan_date,
         public ?string $return_date,
         public ?string $observation,
-    ) {
+    )
+    {
     }
 
     public static function fromRequest(array $data): self

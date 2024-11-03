@@ -50,8 +50,8 @@ describe('validations', function () {
 
         $response->assertJsonValidationErrors(
             [
-                'email' => trans('validation.required',['attribute' => 'email']),
-                'password' => trans('validation.required',['attribute' => 'password']),
+                'email' => trans('validation.required', ['attribute' => 'email']),
+                'password' => trans('validation.required', ['attribute' => 'password']),
             ]);
     });
 });

@@ -18,7 +18,7 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json(["errors" => $validator->errors()], 422);
         }
 
@@ -31,6 +31,6 @@ class LoginController extends Controller
         $user = auth()->user();
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json(["user_data"=>$user,'access_token' => $token, 'token_type' => 'Bearer']);
+        return response()->json(["user_data" => $user, 'access_token' => $token, 'token_type' => 'Bearer']);
     }
 }
