@@ -40,7 +40,7 @@ class LoanController extends Controller
             'book_id' => 'required|exists:books,id',
             'user_id' => 'required|exists:users,id',
             'loan_date' => 'nullable|date',
-            'return_date' => 'nullable|date',
+            'return_date' => 'nullable|date|after:today',
             'devolution_date' => 'nullable|date',
             'observation' => 'nullable|string',
         ]);
@@ -60,8 +60,8 @@ class LoanController extends Controller
         try {
 
             $loan = $action->execute($book, $user, $storeLoanDto);
-
             return $this->response('Empréstimo criado com sucesso', 201, new LoanResource($loan));
+
         } catch (BookUnavailableException|UserHasBorrowedBooksException $e) {
             return $this->error($e->getMessage(), 422);
 

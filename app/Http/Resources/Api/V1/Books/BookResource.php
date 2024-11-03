@@ -15,10 +15,15 @@ class BookResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $status = [
+            'available' => 'Disponível para empréstimo',
+            'unavailable' => 'Indisponível para empréstimo',
+        ];
         return [
             'id' => $this->id,
             'titulo' => $this->title,
             'autor' => $this->author,
+            'status' => $status[$this->status],
             'descricao' => $this->description,
             'data_criacao' => Carbon::parse($this->created_at)->format('d/m/Y'),
             'data_atualizacao' => Carbon::parse($this->updated_at)->format('d/m/Y'),

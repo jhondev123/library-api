@@ -34,7 +34,6 @@ test('testa cadastrar sem usuário e livro', function () {
     $response->assertJsonStructure(expectedErrorJsonStructure());
 });
 test('testa cadastar um empréstimo com livro indisponível', function () {
-
     $response = $this->post(route('loans.store'), [
         'book_id' => $this->book_with_status_unavailable->id,
         'user_id' => $this->user->id,
@@ -63,4 +62,16 @@ test('testando cadastrar um empréstimo com usuário não autenticado', function
 
     $response->assertStatus(401);
     $response->assertJsonStructure(['message']);
+});
+
+test('testando cadastrar um empréstimo com uma data de devolução passada',function() {
+
+    $response = $this->post(route('loans.store'), [
+        'book_id' => $this->book->id,
+        'user_id' => $this->user->id,
+        'return_date' => now()->subDays(1)->format('Y-m-d'),
+    ], $this->getAuthorizationHeader());
+
+    $response->assertStatus(422);
+    $response->assertJsonStructure(expectedErrorJsonStructure());
 });

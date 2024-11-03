@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Book;
 
+use App\Enums\BookStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\V1\Books\BookResource;
 use App\Models\Book;
@@ -24,7 +25,6 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        $request->merge(['status' => 'available']);
 
         $validation = Validator::make($request->all(), [
             'title' => 'required|string',
@@ -35,7 +35,10 @@ class BookController extends Controller
         if ($validation->fails()) {
             return $this->error('Erro ao cadastrar um livro', 422, $validation->errors());
         }
-        $book = Book::create($validation->validated());
+        $bookValidated = $validation->validated();
+        $bookValidated['status'] = BookStatus::Available->value;
+        $book = Book::create($bookValidated);
+
         return $this->response('Livro Cadastrado com sucesso', 200, new BookResource($book));
     }
 

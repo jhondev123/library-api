@@ -66,7 +66,7 @@ function expectedBookJsonStructure()
 function expectedOneBookJsonStructure()
 {
     return [
-        'data' => ['id', 'titulo', 'autor', 'data_criacao', 'data_atualizacao']
+        'data' => ['id', 'titulo', 'autor', 'data_criacao', 'data_atualizacao', 'status']
     ];
 }
 
@@ -74,7 +74,7 @@ function expectedLoanJsonStructure()
 {
     return [
         'data' => [
-            '*' => ['id', 'usuario', 'livro', 'data_emprestimo', 'data_devolucao', 'observacao']
+            '*' => ['id', 'usuario', 'livro', 'data_emprestimo', 'data_devolucao', 'observacao','status']
         ],
         'status',
         'message'

@@ -5,6 +5,7 @@ namespace App\Actions\Loan;
 use App\Actions\Book\VerifyBookIsAvaliableAction;
 use App\Actions\User\VerifyUserHasBorrowedBooksAction;
 use App\Dtos\Loan\StoreLoanDto;
+use App\Enums\BookStatus;
 use App\Exceptions\Book\BookUnavailableException;
 use App\Exceptions\Loan\UserHasBorrowedBooksException;
 use App\Models\Book;
@@ -22,9 +23,15 @@ class LoanBookAction
         private Loan                             $loan
     )
     {
-
     }
-
+    /**
+     * @param Book $book
+     * @param User $user
+     * @param StoreLoanDto $dto
+     * @return Loan
+     * @throws BookUnavailableException
+     * @throws UserHasBorrowedBooksException
+     */
     public function execute(Book $book, User $user, StoreLoanDto $dto): Loan
     {
         // verifica se o livro já está emprestado
@@ -39,7 +46,7 @@ class LoanBookAction
 
         $loan = $this->loan->create($dto->toArray());
 
-        $book->update(['status' => 'unavailable']);
+        $book->update(['status' => BookStatus::Unavailable->value]);
         $user->update(['has_borrowed_books' => true]);
 
         return $loan;
