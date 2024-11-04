@@ -16,25 +16,46 @@ use App\Models\User;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\JsonResponse;
 
 class LoanController extends Controller
 {
     use HttpResponse;
 
     /**
-     * Display a listing of the resource.
+     *
      */
-    public function index()
+    /**
+     * @return JsonResponse
+     * Lista todos os empréstimos.
+     * Este metodo retorna uma lista com todos os empréstimos cadastrados no sistema.
+     * junto com as multas associadas a cada empréstimo.
+     */
+    public function index(): JsonResponse
     {
         $loans = Loan::all()->load('fine');
 
         return $this->response('Empréstimos', 200, LoanResource::collection($loans));
     }
 
+
     /**
-     * Store a newly created resource in storage.
+     * Cria um novo empréstimo.
+     *
+     * Parâmetros esperados no corpo da requisição:
+     * - book_id (required|exists:books,id): ID do livro a ser emprestado.
+     * - user_id (required|exists:users,id): ID do usuário que está pegando o livro emprestado.
+     * - loan_date (nullable|date): Data do empréstimo (opcional).
+     * - return_date (nullable|date|after:today): Data de devolução prevista (opcional).
+     * - devolution_date (nullable|date): Data de devolução efetiva (opcional).
+     * - observation (nullable|string): Observações adicionais (opcional).
+     *
+     * @param Request $request Dados da requisição.
+     * @param LoanBookAction $action Ação para realizar o empréstimo.
+     * @return JsonResponse Retorna uma resposta JSON com uma mensagem de sucesso e o recurso criado,
+     * ou uma mensagem de erro com os detalhes da validação.
      */
-    public function store(Request $request, LoanBookAction $action)
+    public function store(Request $request, LoanBookAction $action): JsonResponse
     {
         $validation = Validator::make($request->all(), [
             'book_id' => 'required|exists:books,id',
@@ -58,30 +79,39 @@ class LoanController extends Controller
             'delivery_status' => 'ok',
         ]);
         try {
-
             $loan = $action->execute($book, $user, $storeLoanDto);
             return $this->response('Empréstimo criado com sucesso', 201, new LoanResource($loan));
-
         } catch (BookUnavailableException|UserHasBorrowedBooksException $e) {
             return $this->error($e->getMessage(), 422);
-
         }
-
     }
 
+
     /**
-     * Display the specified resource.
+     * Exibe um empréstimo específico.
+     *
+     * @param Loan $loan O empréstimo a ser exibido.
+     * @return JsonResponse Retorna uma resposta JSON com os detalhes do empréstimo.
      */
-    public function show(Loan $loan)
+    public function show(Loan $loan): JsonResponse
     {
         $loan->load('fine');
         return $this->response('Empréstimo', 200, new LoanResource($loan));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Atualiza um empréstimo existente.
+     *
+     * Parâmetros esperados no corpo da requisição:
+     * - return_date (nullable|date|after_or_equal:today): Data de devolução efetiva (opcional).
+     * - observation (nullable|string): Observações adicionais (opcional).
+     *
+     * @param Request $request Dados da requisição, incluindo os campos do empréstimo a serem atualizados.
+     * @param Loan $loan O empréstimo a ser atualizado.
+     * @return JsonResponse Retorna uma resposta JSON com uma mensagem de sucesso e o recurso atualizado,
+     * ou uma mensagem de erro com os detalhes da validação.
      */
-    public function update(Request $request, Loan $loan)
+    public function update(Request $request, Loan $loan):JsonResponse
     {
         if (empty($request->all())) {
             return $this->response('', 204, []);
@@ -103,9 +133,12 @@ class LoanController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove um empréstimo.
+     *
+     * @param Loan $loan O empréstimo a ser removido.
+     * @return JsonResponse Retorna uma resposta JSON vazia.
      */
-    public function destroy(Loan $loan)
+    public function destroy(Loan $loan): JsonResponse
     {
         $loan->delete();
         return response()->json(null, 204);
