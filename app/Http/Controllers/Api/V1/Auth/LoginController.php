@@ -3,13 +3,25 @@
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
 {
+
     /**
-     * Handle the incoming request.
+     * Lida com a requisição de login.
+     *
+     * Este metodo valida a requisição de login, tenta autenticar o usuário
+     * e retorna uma resposta JSON com os dados do usuário e o token de acesso, se bem-sucedido.
+     *
+     * @param Request $request A requisição contendo as credenciais de login.
+     * @return JsonResponse Uma resposta JSON com os dados do usuário e o token de acesso, ou uma mensagem de erro.
+     *
+     *  Parâmetros esperados no corpo da requisição:
+     *  - return_date (required|email): Email de acesso do usuario.
+     *  - observation (required): senha de acesso.
      */
     public function __invoke(Request $request)
     {
