@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\V1\Loan\LoanResource;
 use App\Models\Loan;
 use App\Traits\HttpResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,6 +19,20 @@ class LoanDevolutionController extends Controller
 
     /**
      * Handle the incoming request.
+     *
+     * Este metodo lida com a devolução de um livro emprestado. Ele valida a requisição,
+     * cria um DTO (Data Transfer Object) a partir dos dados validados e executa a ação de devolução.
+     * Se a devolução for bem-sucedida, retorna uma resposta JSON com os dados do empréstimo atualizado.
+     * Se o livro já foi devolvido, retorna uma mensagem de erro.
+     *
+     * Parâmetros esperados no corpo da requisição:
+     * - devolution_date (required|date): Data da devolução do livro.
+     * - observation (required|string): Observação sobre a devolução.
+     *
+     * @param Request $request A requisição contendo os dados da devolução.
+     * @param Loan $loan O empréstimo a ser devolvido.
+     * @param DevolutionBookAction $action A ação de devolução do livro.
+     * @return JsonResponse Uma resposta JSON com os dados do empréstimo atualizado ou uma mensagem de erro.
      */
     public function __invoke(Request $request, Loan $loan, DevolutionBookAction $action)
     {
@@ -45,7 +60,6 @@ class LoanDevolutionController extends Controller
         } catch (BookAlreadyReturn $e) {
             return $this->error($e->getMessage(), 400);
         }
-
 
     }
 }
