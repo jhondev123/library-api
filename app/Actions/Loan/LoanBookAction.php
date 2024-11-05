@@ -24,13 +24,16 @@ class LoanBookAction
     )
     {
     }
+
     /**
-     * @param Book $book
-     * @param User $user
-     * @param StoreLoanDto $dto
-     * @return Loan
-     * @throws BookUnavailableException
-     * @throws UserHasBorrowedBooksException
+     * Executa a ação de empréstimo de um livro.
+     *
+     * @param Book $book O livro a ser emprestado.
+     * @param User $user O usuário que está pegando o livro emprestado.
+     * @param StoreLoanDto $dto Os dados do empréstimo.
+     * @return Loan Retorna o empréstimo criado.
+     * @throws BookUnavailableException Se o livro não estiver disponível para empréstimo.
+     * @throws UserHasBorrowedBooksException Se o usuário já tiver livros emprestados.
      */
     public function execute(Book $book, User $user, StoreLoanDto $dto): Loan
     {
