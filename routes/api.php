@@ -7,6 +7,10 @@ use App\Http\Middleware\Auth\Authenticate;
 
 Route::prefix('v1')->group(function () {
 
+    Route::get('/ping', function () {
+        return response()->json(['message' => 'pong']);
+    });
+
     Route::post('login', [App\Http\Controllers\Api\V1\Auth\LoginController::class, '__invoke'])
         ->name('login');
 
