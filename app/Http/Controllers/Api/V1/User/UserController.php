@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\V1\User\UserResource;
 use App\Models\User;
 use App\Traits\HttpResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -16,9 +17,9 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         return $this->response("Usuários", 200, UserResource::collection(User::all()));
     }
@@ -26,10 +27,11 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @param User $user
+     * @return JsonResponse
      */
-    public function store(Request $request,User $user)
+    public function store(Request $request,User $user): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|min:2|max:255|regex:/^[a-zA-ZÀ-ÿ\s]+$/',
@@ -54,10 +56,10 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\User $user
-     * @return \Illuminate\Http\JsonResponse
+     * @param User $user
+     * @return JsonResponse
      */
-    public function show(User $user)
+    public function show(User $user): JsonResponse
     {
         return $this->response("Usuário", 200, new UserResource($user));
     }
@@ -65,22 +67,34 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\User $user
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @param User $user
+     * @return JsonResponse
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user): JsonResponse
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'nullable|string|min:2|max:255|regex:/^[a-zA-ZÀ-ÿ\s]+$/',
+            'email' => 'nullable|email|unique:users',
+        ]);
+
+        if($validator->fails()){
+            return $this->error("Erro ao atualizar o usuário", 400, $validator->errors());
+        }
+
+        $user->update($validator->validated());
+        return $this->response("Usuário atualizado com sucesso", 201, new UserResource($user));
+
     }
+
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\User $user
-     * @return \Illuminate\Http\JsonResponse
+     * @param User $user
+     * @return JsonResponse
      */
-    public function destroy(User $user)
+    public function destroy(User $user): JsonResponse
     {
         $user->delete();
         return $this->response("Usuário deletado com sucesso", 201);
