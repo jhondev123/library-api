@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->boolean('has_borrowed_books')->default(false);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('is_admin')->default(false);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
