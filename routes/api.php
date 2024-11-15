@@ -70,6 +70,10 @@ Route::prefix('v1')->group(function () {
                 ->name('users.destroy');
         });
 
+
+        require_once __DIR__ . '/administration.php';
+
+
     });
 
 
