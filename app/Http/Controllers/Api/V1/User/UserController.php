@@ -83,10 +83,29 @@ class UserController extends Controller
         }
 
         $user->update($validator->validated());
-        return $this->response("Usuário atualizado com sucesso", 201, new UserResource($user));
+        return $this->response("Usuário atualizado com sucesso", 200, new UserResource($user));
 
     }
 
+    public function updatePassword(Request $request, User $user): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => [
+                'required',
+                'min:6',
+                'confirmed',
+                'regex:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/'
+            ],
+        ]);
+
+        if($validator->fails()){
+            return $this->error("Erro ao atualizar a senha do usuário", 400, $validator->errors());
+        }
+
+        $user->update($validator->validated());
+        return $this->response("Senha atualizada com sucesso", 200, new UserResource($user));
+
+    }
 
     /**
      * Remove the specified resource from storage.

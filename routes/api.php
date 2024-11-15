@@ -57,6 +57,9 @@ Route::prefix('v1')->group(function () {
             Route::put('/{user}', [App\Http\Controllers\Api\V1\User\UserController::class, 'update'])
                 ->name('users.update');
 
+            Route::put('/{user}/password', [App\Http\Controllers\Api\V1\User\UserController::class, 'updatePassword'])
+                ->name('users.password.update');
+
             Route::delete('/{user}', [App\Http\Controllers\Api\V1\User\UserController::class, 'destroy'])
                 ->name('users.destroy');
         });
