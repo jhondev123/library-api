@@ -7,6 +7,7 @@ use App\Http\Resources\Api\V1\User\UserResource;
 use App\Models\User;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -28,9 +29,26 @@ class UserController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request,User $user)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|min:2|max:255|regex:/^[a-zA-ZÀ-ÿ\s]+$/',
+            'email' => 'required|email|unique:users',
+            'password' => [
+                'required',
+                'min:6',
+                'confirmed',
+                'regex:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/'
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return $this->error("Erro ao cadastrar o usuário", 400, $validator->errors());
+        }
+
+        $userCreated = $user->create($validator->validated());
+
+        return $this->response("Usuário criado com sucesso", 201,$userCreated);
     }
 
     /**
