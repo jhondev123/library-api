@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Jhonattan',
             'email' => 'jhonattan@gmail.com',
-            'password' => bcrypt('123456')
+            'password' => bcrypt('123456'),
+            'is_admin' => true
         ]);
 
         Book::factory(30)->create();
