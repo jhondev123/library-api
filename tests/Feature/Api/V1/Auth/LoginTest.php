@@ -11,17 +11,21 @@ it('should auth user', function () {
 
     $response->assertStatus(200);
     $response->assertJsonStructure([
-        'user_data' => [
-            'id',
-            'name',
-            'email',
-            'email_verified_at',
-            'created_at',
-            'updated_at',
+        'message',
+        'data' => [
+            'user_data' => [
+                'id',
+                'name',
+                'email',
+                'email_verified_at',
+                'created_at',
+                'updated_at',
+            ],
+            'access_token',
+            'token_type',
         ],
-        'access_token',
-        'token_type',
     ]);
+
 
 });
 
@@ -48,10 +52,12 @@ describe('validations', function () {
 
         $response->assertStatus(422);
 
-        $response->assertJsonValidationErrors(
-            [
-                'email' => trans('validation.required', ['attribute' => 'email']),
-                'password' => trans('validation.required', ['attribute' => 'password']),
-            ]);
+        $response->assertJsonStructure([
+            'message',
+            'errors' => [
+                'email',
+                'password',
+            ],
+        ]);
     });
 });

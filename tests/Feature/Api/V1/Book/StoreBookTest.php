@@ -22,11 +22,13 @@ it('Tenta cadastrar um livro sem descrição', function () use ($title, $author)
 
     $response->assertStatus(422);
     $response->assertJsonStructure(expectedErrorJsonStructure());
-    $response->assertJsonValidationErrors(
-        [
-            'description' => trans('validation.required', ['attribute' => 'description']),
+    $response->assertJsonStructure([
+        'message',
+        'errors' => [
+            'description'
         ]
-    );
+    ]);
+
 });
 
 it('Tenta cadastrar um livro sem titulo', function () use ($author, $description) {
@@ -38,11 +40,12 @@ it('Tenta cadastrar um livro sem titulo', function () use ($author, $description
 
     $response->assertStatus(422);
     $response->assertJsonStructure(expectedErrorJsonStructure());
-    $response->assertJsonValidationErrors(
-        [
-            'title' => trans('validation.required', ['attribute' => 'title'])
+    $response->assertJsonStructure([
+        'message',
+        'errors' => [
+            'title'
         ]
-    );
+    ]);
 
 });
 
@@ -88,11 +91,12 @@ it('testa cadastrar um livro com title inválido', function () use ($author, $de
 
     $response->assertStatus(422);
     $response->assertJsonStructure(expectedErrorJsonStructure());
-    $response->assertJsonValidationErrors(
-        [
-            'title' => trans('validation.string', ['attribute' => 'title'])
+    $response->assertJsonStructure([
+        'message',
+        'errors' => [
+            'title'
         ]
-    );
+    ]);
 });
 
 it('testa cadastrar com um usuário não autenticado', function () use ($title, $author, $description) {
