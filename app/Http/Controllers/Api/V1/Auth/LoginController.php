@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Traits\HttpResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
 {
+    use HttpResponse;
 
     /**
      * Lida com a requisição de login.
@@ -32,7 +34,8 @@ class LoginController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(["errors" => $validator->errors()], 422);
+            Log::error('Erro ao autenticar o usuário'. $validator->errors());
+            return $this->error('Erro ao autenticar o usuário', 422, $validator->errors());
         }
 
         $credentials = $request->only('email', 'password');
@@ -40,7 +43,8 @@ class LoginController extends Controller
         if (!auth()->attempt($credentials)) {
             Log::info("Tentativa de login com credenciais inválidas: {$credentials['email']}");
 
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return $this->error('Unauthorized', 401);
+
         }
 
         $user = auth()->user();
@@ -48,6 +52,12 @@ class LoginController extends Controller
 
         Log::info("Usuário logado: {$user->name} ({$user->email})");
 
-        return response()->json(["user_data" => $user, 'access_token' => $token, 'token_type' => 'Bearer']);
+        return $this->response('Usuário autenticado', 200, [
+            'user_data' => $user,
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+        ]);
+
+
     }
 }

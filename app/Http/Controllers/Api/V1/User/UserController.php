@@ -35,13 +35,19 @@ class UserController extends Controller
     public function store(Request $request,User $user): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|min:2|max:255|regex:/^[a-zA-ZÀ-ÿ\s]+$/',
+            'name' => [
+                'required',
+                'string',
+                'min:2',
+                'max:255',
+                new \App\Rules\UsernameValidation()
+            ],
             'email' => 'required|email|unique:users',
             'password' => [
                 'required',
                 'min:6',
                 'confirmed',
-                'regex:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/'
+                new \App\Rules\PasswordComplexity()
             ],
         ]);
 
@@ -78,7 +84,13 @@ class UserController extends Controller
     public function update(Request $request, User $user): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'nullable|string|min:2|max:255|regex:/^[a-zA-ZÀ-ÿ\s]+$/',
+            'name' => [
+                'nullable',
+                'string',
+                'min:2',
+                'max:255',
+                new \App\Rules\UsernameValidation()
+            ],
             'email' => 'nullable|email|unique:users',
         ]);
 
@@ -100,7 +112,7 @@ class UserController extends Controller
                 'required',
                 'min:6',
                 'confirmed',
-                'regex:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/'
+                new \App\Rules\PasswordComplexity()
             ],
         ]);
 
