@@ -9,10 +9,16 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ *
+ */
 class DashboardController extends Controller
 {
 
-    public function index()
+    /**
+     * @return JsonResponse
+     */
+    public function index(): JsonResponse
     {
         return response()->json([
             'books_info' => $this->booksInfo(),
@@ -20,6 +26,10 @@ class DashboardController extends Controller
         ]);
 
     }
+
+    /**
+     * @return JsonResponse
+     */
     public function booksInfo(): JsonResponse
     {
         $cacheKey = 'books_info';
@@ -37,6 +47,9 @@ class DashboardController extends Controller
         return response()->json($booksInfo);
     }
 
+    /**
+     * @return JsonResponse
+     */
     public function loansInfo():JsonResponse
     {
         $cacheKey = 'loans_info';
