@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Traits\HttpResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -45,10 +46,13 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
+            Log::error('Erro ao cadastrar o usuário '. $validator->errors());
             return $this->error("Erro ao cadastrar o usuário", 400, $validator->errors());
         }
 
         $userCreated = $user->create($validator->validated());
+
+        Log::info("Usuário criado com sucesso. 'user_id' => $userCreated->id");
 
         return $this->response("Usuário criado com sucesso", 201,$userCreated);
     }
@@ -79,10 +83,12 @@ class UserController extends Controller
         ]);
 
         if($validator->fails()){
+            Log::error('Erro ao atualizar o usuário'. $validator->errors());
             return $this->error("Erro ao atualizar o usuário", 400, $validator->errors());
         }
 
         $user->update($validator->validated());
+        Log::info("Usuário atualizado com sucesso. 'user_id' => $user->id");
         return $this->response("Usuário atualizado com sucesso", 200, new UserResource($user));
 
     }
@@ -99,10 +105,15 @@ class UserController extends Controller
         ]);
 
         if($validator->fails()){
+            Log::error('Erro ao atualizar a senha do usuário' . $validator->errors());
+
             return $this->error("Erro ao atualizar a senha do usuário", 400, $validator->errors());
         }
 
         $user->update($validator->validated());
+
+        Log::info("Senha atualizada com sucesso. 'user_id' => $user->id");
+
         return $this->response("Senha atualizada com sucesso", 200, new UserResource($user));
 
     }
@@ -116,6 +127,7 @@ class UserController extends Controller
     public function destroy(User $user): JsonResponse
     {
         $user->delete();
+        Log::info("Usuário deletado com sucesso. 'user_id' => $user->id");
         return $this->response("Usuário deletado com sucesso", 201);
     }
 }

@@ -9,6 +9,7 @@ use App\Models\Book;
 use App\Traits\HttpResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -56,9 +57,13 @@ class BookController extends Controller
         if ($validation->fails()) {
             return $this->error('Erro ao cadastrar um livro', 422, $validation->errors());
         }
+
         $bookValidated = $validation->validated();
         $bookValidated['status'] = BookStatus::Available->value;
+
         $book = Book::create($bookValidated);
+
+        Log::info("Livro cadastrado: {$book->title} ({$book->author})");
 
         return $this->response('Livro Cadastrado com sucesso', 200, new BookResource($book));
     }
@@ -102,6 +107,7 @@ class BookController extends Controller
         }
 
         $book->update($validation->validated());
+        Log::info("Livro atualizado: {$book->id} {$book->title} ({$book->author})");
         return $this->response('Livro atualizado com sucesso', 200, new BookResource($book));
     }
 
@@ -113,6 +119,7 @@ class BookController extends Controller
     public function destroy(Book $book)
     {
         $book->delete();
+        Log::info("Livro deletado: {$book->id} {$book->title}");
         return response()->json(null, 204);
 
     }

@@ -15,6 +15,7 @@ use App\Models\Loan;
 use App\Models\User;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 
@@ -80,8 +81,12 @@ class LoanController extends Controller
         ]);
         try {
             $loan = $action->execute($book, $user, $storeLoanDto);
+
+            Log::info('Empréstimo criado com sucesso', ['book_id' => $book->id, 'user_id' => $user->id]);
+
             return $this->response('Empréstimo criado com sucesso', 201, new LoanResource($loan));
         } catch (BookUnavailableException|UserHasBorrowedBooksException $e) {
+            Log::error($e->getMessage(), ['book_id' => $book->id, 'user_id' => $user->id]);
             return $this->error($e->getMessage(), 422);
         }
     }
@@ -127,6 +132,7 @@ class LoanController extends Controller
         }
 
         $loan->update($request->all());
+        Log::info('Empréstimo atualizado com sucesso', ['loan_id' => $loan->id]);
 
         return $this->response('Empréstimo atualizado com sucesso', 200, new LoanResource($loan));
 
@@ -141,6 +147,7 @@ class LoanController extends Controller
     public function destroy(Loan $loan): JsonResponse
     {
         $loan->delete();
+        Log::info('Empréstimo removido com sucesso', ['loan_id' => $loan->id]);
         return response()->json(null, 204);
     }
 }

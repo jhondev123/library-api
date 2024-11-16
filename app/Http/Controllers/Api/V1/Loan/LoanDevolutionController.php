@@ -11,6 +11,7 @@ use App\Models\Loan;
 use App\Traits\HttpResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class LoanDevolutionController extends Controller
@@ -43,12 +44,14 @@ class LoanDevolutionController extends Controller
         if (!$request->has('observation')) {
             $request->merge(['observation' => 'devolvido']);
         }
+
         $validation = Validator::make($request->all(), [
             'devolution_date' => 'required|date',
             'observation' => 'required|string',
         ]);
 
         if ($validation->fails()) {
+            Log::error('Erro ao devolver o livro', $validation->errors());
             return $this->error('Erro ao devolver o livro', 422, $validation->errors());
         }
 
@@ -56,8 +59,14 @@ class LoanDevolutionController extends Controller
 
         try {
             $loanUpdated = $action->execute($loan, $dto);
+
+            Log::info("Livro devolvido com sucesso. 'loan_id' => $loan->id");
+
             return $this->response('Livro devolvido com sucesso', 200, new LoanResource($loanUpdated));
         } catch (BookAlreadyReturn $e) {
+
+            Log::error("{$e->getMessage()}. 'loan_id' => $loan->id");
+
             return $this->error($e->getMessage(), 400);
         }
 
